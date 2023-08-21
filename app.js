@@ -51,7 +51,7 @@ const getValue = (currentDateTime) => {
   const currentTimeslotIndex = timeslots.findIndex(slot => currentDateTime.time >= slot.start && currentDateTime.time < slot.end);
 
   if (currentTimeslotIndex === -1 || timeslots.length - currentTimeslotIndex < 3) {
-    // If the current time is after 22:59:59 or there are not enough timeslots for today, load next day's timeslots.
+    // if the current time is after 22:59:59 or there are not enough timeslots for today, load next day's timeslots.
     const nextDayFile = path.join('data', `${getNextDay(currentDateTime.date)}.txt`);
     timeslots = timeslots.concat(readDataFile(nextDayFile));
   }
@@ -63,5 +63,29 @@ const getValue = (currentDateTime) => {
   return `Current (${currentDateTime.timeStr}) - ${current}, next two timeslots are ${next1} and ${next2}.`;
 };
 
-const currentDateTime = getCurrentDateTime();
-console.log(getValue(currentDateTime));
+const getCurrentValues = () => {
+  const currentDateTime = getCurrentDateTime();
+  const response = getValue(currentDateTime);
+
+  // extracting the values from the string response to return as JSON
+  const regex = /Current \((\d{2}:\d{2})\) - ([\d.]+p\/kWh), next two timeslots are ([\d.]+p\/kWh) and ([\d.]+p\/kWh)./;
+
+  const match = response.match(regex);
+  
+  if (!match) return null;
+
+  return {
+    time: match[1],
+    current: parseFloat(match[2]),
+    next1: parseFloat(match[3]),
+    next2: parseFloat(match[4])
+  };
+};
+
+module.exports = {
+  getCurrentValues
+};
+
+//const currentDateTime = getCurrentDateTime();
+//console.log(getValue(currentDateTime));
+console.log(getCurrentValues());

@@ -1,11 +1,22 @@
+const fs = require('fs');
 const express = require('express');
 const multer = require('multer');
-const fs = require('fs');
+const { getCurrentValues } = require('./app');
 
+const port = process.env.API_PORT || 4134;
 const app = express();
-const port = 3000;
 const upload = multer({ dest: 'data/' });
 
+app.get('/api/current', (req, res) => {
+    const values = getCurrentValues();
+  
+    if (!values) {
+      res.json({ result: false });
+    } else {
+      res.json({ result: true, ...values });
+    }
+  });
+  
 app.post('/upload', upload.single('file'), (req, res) => {
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
