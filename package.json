@@ -1,10 +1,14 @@
 {
-  "name": "octopus-energy",
+  "name": "octopus-energy-logging",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "An application is made to record and report current electricity prices from Octopus Energy Agile - Eastern England region only.",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "client-start": "pm2 start sender.js --name 'octo-engy-sender' --log ./logs/pm2.log --time",
+    "client-stop": "pm2 stop 'octo-engy-sender'",
+    "server-start": "pm2 start receiver.js --name 'octo-engy-receiver' --log ./logs/pm2.log --time",
+    "server-stop": "pm2 stop 'octo-engy-receiver'"
   },
   "keywords": [],
   "author": "",
