@@ -1,27 +1,25 @@
 const fs = require('fs');
 const path = require('path');
+const { DateTime } = require('luxon');
 
 const formatTime = (hours, minutes) => {
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 };
 
-// Get current date and time
 const getCurrentDateTime = () => {
-  const now = new Date();
+  const now = DateTime.now().setZone('Europe/London');
   return {
-    date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`,
-    time: now.getHours() * 60 + now.getMinutes(), // convert time to minutes for easier comparison
-    timeStr: formatTime(now.getHours(), now.getMinutes())
+    date: now.toFormat('yyyy-MM-dd'),
+    time: now.hour * 60 + now.minute,
+    timeStr: formatTime(now.hour, now.minute)
   };
 };
 
 const getNextDay = (date) => {
-  const nextDay = new Date(date);
-  nextDay.setDate(nextDay.getDate() + 1);
-  return `${nextDay.getFullYear()}-${String(nextDay.getMonth() + 1).padStart(2, '0')}-${String(nextDay.getDate()).padStart(2, '0')}`;
+  const nextDay = DateTime.fromISO(date).plus({ days: 1 });
+  return nextDay.toFormat('yyyy-MM-dd');
 };
 
-// Read and parse the data file
 const readDataFile = (filename) => {
   if (!fs.existsSync(filename)) return [];
 
