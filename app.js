@@ -31,6 +31,7 @@ const readDataFile = (filename) => {
       const [hour, minute] = time.split(':').map(Number);
       return hour * 60 + minute;
     });
+    if ( (times[0] == 1410) && (times[1] == 0) ) times[1] = 1440;
 
     timeslots.push({
       start: times[0],
